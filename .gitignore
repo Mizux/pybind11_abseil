@@ -1,2 +1,4 @@
-build
+/build
+/bazel-*
 tmp_build
+.*.swp
