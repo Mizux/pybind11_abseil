@@ -42,13 +42,18 @@ target_link_libraries(ok_status_singleton_pyinit_google3
 
 # ok_status_singleton =======================================================
 
-add_library(ok_status_singleton SHARED ok_status_singleton_py_extension_stub.cc)
+pybind11_add_module(ok_status_singleton SHARED ok_status_singleton_py_extension_stub.cc)
 add_library(pybind11_abseil::ok_status_singleton ALIAS ok_status_singleton)
+
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+  set_target_properties(ok_status_singleton PROPERTIES SUFFIX ".so")
+  set_property(TARGET ok_status_singleton APPEND PROPERTY
+    LINK_FLAGS "-flat_namespace -undefined suppress")
+endif()
 
 target_include_directories(ok_status_singleton
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
-
-set_target_properties(ok_status_singleton PROPERTIES PREFIX "")
 
 target_link_libraries(ok_status_singleton
                       PUBLIC ok_status_singleton_pyinit_google3)
@@ -150,8 +155,16 @@ target_link_libraries(status_pyinit_google3 PUBLIC register_status_bindings)
 
 # status ====================================================================
 
-add_library(status_py_extension_stub SHARED status_py_extension_stub.cc)
+pybind11_add_module(status_py_extension_stub SHARED status_py_extension_stub.cc)
+
 set_target_properties(status_py_extension_stub PROPERTIES LIBRARY_OUTPUT_NAME "status")
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+  set_target_properties(status_py_extension_stub PROPERTIES SUFFIX ".so")
+  set_property(TARGET status_py_extension_stub APPEND PROPERTY
+    LINK_FLAGS "-flat_namespace -undefined suppress")
+endif()
+
 add_library(pybind11_abseil::status ALIAS status_py_extension_stub)
 
 target_include_directories(status_py_extension_stub INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
