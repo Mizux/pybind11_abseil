@@ -42,7 +42,7 @@ target_link_libraries(ok_status_singleton_pyinit_google3
 
 # ok_status_singleton =======================================================
 
-pybind11_add_module(ok_status_singleton SHARED ok_status_singleton_py_extension_stub.cc)
+pybind11_add_module(ok_status_singleton MODULE ok_status_singleton_py_extension_stub.cc)
 add_library(pybind11_abseil::ok_status_singleton ALIAS ok_status_singleton)
 
 # note: macOS is APPLE and also UNIX !
@@ -155,7 +155,7 @@ target_link_libraries(status_pyinit_google3 PUBLIC register_status_bindings)
 
 # status ====================================================================
 
-pybind11_add_module(status_py_extension_stub SHARED status_py_extension_stub.cc)
+pybind11_add_module(status_py_extension_stub MODULE status_py_extension_stub.cc)
 
 set_target_properties(status_py_extension_stub PROPERTIES LIBRARY_OUTPUT_NAME "status")
 # note: macOS is APPLE and also UNIX !
@@ -181,7 +181,7 @@ add_library(pybind11_abseil::import_status_module ALIAS import_status_module)
 target_include_directories(import_status_module
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(import_status_module PUBLIC status_py_extension_stub)
+add_dependencies(import_status_module status_py_extension_stub)
 
 # status_casters ===============================================================
 
