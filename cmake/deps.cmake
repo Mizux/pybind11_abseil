@@ -1,3 +1,5 @@
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+
 if(NOT BUILD_abseil)
   find_package(absl REQUIRED)
 endif()
