@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 project(pybind11_abseil LANGUAGES CXX)
 
 include(CTest)
@@ -15,6 +17,7 @@ endif()
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development.Module)
 add_subdirectory(cmake/dependencies dependencies)
+include(deps)
 
 set(TOP_LEVEL_DIR ${CMAKE_CURRENT_LIST_DIR})
 include_directories(${TOP_LEVEL_DIR} ${pybind11_INCLUDE_DIRS})
