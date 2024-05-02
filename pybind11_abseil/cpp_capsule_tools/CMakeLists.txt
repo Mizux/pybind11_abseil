@@ -5,10 +5,13 @@ add_library(pybind11_abseil::cpp_capsule_tools::void_ptr_from_capsule ALIAS
             void_ptr_from_capsule)
 
 target_include_directories(void_ptr_from_capsule
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(void_ptr_from_capsule PUBLIC absl::status absl::statusor
-                                                   absl::strings)
+target_link_libraries(void_ptr_from_capsule
+                      PUBLIC absl::status
+                             absl::statusor
+                             absl::strings
+                             Python3::Module)
 
 # raw_ptr_from_capsule =========================================================
 
@@ -19,10 +22,10 @@ add_library(pybind11_abseil::cpp_capsule_tools::raw_ptr_from_capsule ALIAS
 target_include_directories(raw_ptr_from_capsule
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(
-  raw_ptr_from_capsule INTERFACE void_ptr_from_capsule absl::statusor
-                                 # python_headers does not need to be linked
-)
+target_link_libraries(raw_ptr_from_capsule
+                      INTERFACE void_ptr_from_capsule
+                                absl::statusor
+                                Python3::Module)
 
 # make_shared_ptr_capsule ======================================================
 
@@ -33,6 +36,9 @@ add_library(pybind11_abseil::cpp_capsule_tools::make_shared_ptr_capsule ALIAS
 target_include_directories(make_shared_ptr_capsule
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
+target_link_libraries(make_shared_ptr_capsule
+                      INTERFACE Python3::Module)
+
 # shared_ptr_from_capsule ======================================================
 
 add_library(shared_ptr_from_capsule INTERFACE)
@@ -42,7 +48,7 @@ add_library(pybind11_abseil::cpp_capsule_tools::shared_ptr_from_capsule ALIAS
 target_include_directories(shared_ptr_from_capsule
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(
-  shared_ptr_from_capsule INTERFACE void_ptr_from_capsule absl::statusor
-                                    # python_headers does not need to be linked
-)
+target_link_libraries(shared_ptr_from_capsule
+                      INTERFACE void_ptr_from_capsule
+                                absl::statusor
+                                Python3::Module)

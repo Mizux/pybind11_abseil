@@ -19,7 +19,8 @@ target_link_libraries(
             absl::strings
             absl::time
             absl::optional
-            absl::span)
+            absl::span
+            pybind11::module)
 
 # ok_status_singleton_lib ======================================================
 
@@ -28,9 +29,11 @@ add_library(pybind11_abseil::ok_status_singleton_lib ALIAS
             ok_status_singleton_lib)
 
 target_include_directories(ok_status_singleton_lib
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(ok_status_singleton_lib PUBLIC absl::status)
+target_link_libraries(ok_status_singleton_lib
+                      PUBLIC absl::status
+                             Python3::Module)
 
 # ok_status_singleton_pyinit_google3 ===========================================
 
@@ -38,7 +41,8 @@ add_library(ok_status_singleton_pyinit_google3 STATIC
             ok_status_singleton_pyinit_google3.cc)
 
 target_link_libraries(ok_status_singleton_pyinit_google3
-                      PUBLIC ok_status_singleton_lib)
+                      PUBLIC ok_status_singleton_lib
+                             Python3::Module)
 
 # ok_status_singleton =======================================================
 
@@ -81,7 +85,12 @@ target_link_libraries(status_not_ok_exception INTERFACE absl::status)
 
 add_library(check_status_module_imported INTERFACE)
 
-target_link_libraries(check_status_module_imported INTERFACE absl::status)
+target_include_directories(check_status_module_imported
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+
+target_link_libraries(check_status_module_imported
+                      INTERFACE absl::status
+                                pybind11::module)
 
 # status_caster ================================================================
 
@@ -100,7 +109,8 @@ target_link_libraries(
             status_not_ok_exception
             raw_ptr_from_capsule
             absl::status
-            absl::statusor)
+            absl::statusor
+            pybind11::module)
 
 # statusor_caster ==============================================================
 
@@ -112,8 +122,13 @@ target_include_directories(statusor_caster
 
 target_link_libraries(
   statusor_caster
-  INTERFACE check_status_module_imported no_throw_status status_caster
-            status_from_py_exc absl::status absl::statusor)
+  INTERFACE check_status_module_imported
+            no_throw_status
+            status_caster
+            status_from_py_exc
+            absl::status
+            absl::statusor
+            pybind11::module)
 
 # init_from_tag ================================================================
 
@@ -127,13 +142,18 @@ target_include_directories(init_from_tag
 
 pybind11_add_module(utils_pybind11_absl STATIC utils_pybind11_absl.cc)
 
+target_include_directories(utils_pybind11_absl
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(utils_pybind11_absl PUBLIC absl::strings)
+target_link_libraries(utils_pybind11_absl
+                      PUBLIC absl::strings)
 
 # register_status_bindings =====================================================
 
 pybind11_add_module(register_status_bindings STATIC register_status_bindings.cc)
 
+target_include_directories(register_status_bindings
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
 target_link_libraries(
   register_status_bindings
@@ -153,11 +173,13 @@ target_link_libraries(
 
 pybind11_add_module(status_pyinit_google3 STATIC status_pyinit_google3.cc)
 
-target_link_libraries(status_pyinit_google3 PUBLIC register_status_bindings)
+target_link_libraries(status_pyinit_google3
+                      PUBLIC register_status_bindings)
 
 # status ====================================================================
 
 pybind11_add_module(status_py_extension_stub MODULE status_py_extension_stub.cc)
+add_library(pybind11_abseil::status ALIAS status_py_extension_stub)
 
 set_target_properties(status_py_extension_stub PROPERTIES LIBRARY_OUTPUT_NAME "status")
 # note: macOS is APPLE and also UNIX !
@@ -167,13 +189,11 @@ if(APPLE)
     LINK_FLAGS "-flat_namespace -undefined suppress")
 endif()
 
-add_library(pybind11_abseil::status ALIAS status_py_extension_stub)
-
-target_include_directories(status_py_extension_stub INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
-
 set_target_properties(status_py_extension_stub PROPERTIES PREFIX "")
 
-target_link_libraries(status_py_extension_stub PUBLIC status_pyinit_google3 absl::status)
+target_link_libraries(status_py_extension_stub
+                      PUBLIC status_pyinit_google3
+                              absl::status)
 
 # import_status_module =========================================================
 
@@ -181,7 +201,7 @@ pybind11_add_module(import_status_module STATIC import_status_module.cc)
 add_library(pybind11_abseil::import_status_module ALIAS import_status_module)
 
 target_include_directories(import_status_module
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
 add_dependencies(import_status_module status_py_extension_stub)
 
@@ -191,10 +211,12 @@ add_library(status_casters INTERFACE)
 add_library(pybind11_abseil::status_casters ALIAS status_casters)
 
 target_include_directories(status_casters
-  INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
-target_link_libraries(status_casters INTERFACE import_status_module
-  status_caster statusor_caster)
+target_link_libraries(status_casters
+                      INTERFACE import_status_module
+                                status_caster
+                                statusor_caster)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
