@@ -125,13 +125,15 @@ target_include_directories(init_from_tag
 
 # utils_pybind11_absl ==========================================================
 
-add_library(utils_pybind11_absl STATIC utils_pybind11_absl.cc)
+pybind11_add_module(utils_pybind11_absl STATIC utils_pybind11_absl.cc)
+
 
 target_link_libraries(utils_pybind11_absl PUBLIC absl::strings)
 
 # register_status_bindings =====================================================
 
-add_library(register_status_bindings STATIC register_status_bindings.cc)
+pybind11_add_module(register_status_bindings STATIC register_status_bindings.cc)
+
 
 target_link_libraries(
   register_status_bindings
@@ -149,7 +151,7 @@ target_link_libraries(
 
 # status_pyinit_google3 ========================================================
 
-add_library(status_pyinit_google3 STATIC status_pyinit_google3.cc)
+pybind11_add_module(status_pyinit_google3 STATIC status_pyinit_google3.cc)
 
 target_link_libraries(status_pyinit_google3 PUBLIC register_status_bindings)
 
@@ -175,7 +177,7 @@ target_link_libraries(status_py_extension_stub PUBLIC status_pyinit_google3 absl
 
 # import_status_module =========================================================
 
-add_library(import_status_module STATIC import_status_module.cc)
+pybind11_add_module(import_status_module STATIC import_status_module.cc)
 add_library(pybind11_abseil::import_status_module ALIAS import_status_module)
 
 target_include_directories(import_status_module
