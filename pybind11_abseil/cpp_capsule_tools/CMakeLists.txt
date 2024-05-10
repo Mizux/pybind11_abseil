@@ -5,7 +5,8 @@ add_library(pybind11_abseil::cpp_capsule_tools::void_ptr_from_capsule ALIAS
             void_ptr_from_capsule)
 
 target_include_directories(void_ptr_from_capsule
-                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(void_ptr_from_capsule
                       PUBLIC absl::status
@@ -20,7 +21,8 @@ add_library(pybind11_abseil::cpp_capsule_tools::raw_ptr_from_capsule ALIAS
             raw_ptr_from_capsule)
 
 target_include_directories(raw_ptr_from_capsule
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(raw_ptr_from_capsule
                       INTERFACE void_ptr_from_capsule
@@ -34,7 +36,8 @@ add_library(pybind11_abseil::cpp_capsule_tools::make_shared_ptr_capsule ALIAS
             make_shared_ptr_capsule)
 
 target_include_directories(make_shared_ptr_capsule
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(make_shared_ptr_capsule
                       INTERFACE Python3::Module)
@@ -46,7 +49,8 @@ add_library(pybind11_abseil::cpp_capsule_tools::shared_ptr_from_capsule ALIAS
             shared_ptr_from_capsule)
 
 target_include_directories(shared_ptr_from_capsule
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(shared_ptr_from_capsule
                       INTERFACE void_ptr_from_capsule
