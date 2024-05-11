@@ -46,8 +46,8 @@ add_library(ok_status_singleton_pyinit_google3 STATIC
             ok_status_singleton_pyinit_google3.cc)
 
 target_link_libraries(ok_status_singleton_pyinit_google3
-                      PUBLIC ok_status_singleton_lib
-                             Python3::Module)
+                      PRIVATE ok_status_singleton_lib
+                              Python3::Module)
 
 # ok_status_singleton =======================================================
 
@@ -66,7 +66,7 @@ target_include_directories(ok_status_singleton
                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(ok_status_singleton
-                      PUBLIC ok_status_singleton_pyinit_google3)
+                      PRIVATE ok_status_singleton_pyinit_google3)
 
 # no_throw_status ==============================================================
 
@@ -87,7 +87,8 @@ target_include_directories(status_not_ok_exception
                            INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(status_not_ok_exception INTERFACE absl::status)
+target_link_libraries(status_not_ok_exception
+                      INTERFACE absl::status)
 
 # check_status_module_imported =================================================
 
@@ -171,24 +172,24 @@ target_include_directories(register_status_bindings
 
 target_link_libraries(
   register_status_bindings
-  PUBLIC absl_casters
-         init_from_tag
-         no_throw_status
-         ok_status_singleton_lib
-         status_caster
-         status_not_ok_exception
-         utils_pybind11_absl
-         raw_ptr_from_capsule
-         absl::status
-         absl::statusor
-         absl::strings)
+  PRIVATE absl_casters
+          init_from_tag
+          no_throw_status
+          ok_status_singleton_lib
+          status_caster
+          status_not_ok_exception
+          utils_pybind11_absl
+          raw_ptr_from_capsule
+          absl::status
+          absl::statusor
+          absl::strings)
 
 # status_pyinit_google3 ========================================================
 
 pybind11_add_module(status_pyinit_google3 STATIC status_pyinit_google3.cc)
 
 target_link_libraries(status_pyinit_google3
-                      PUBLIC register_status_bindings)
+                      PRIVATE register_status_bindings)
 
 # status ====================================================================
 
@@ -206,8 +207,7 @@ endif()
 set_target_properties(status_py_extension_stub PROPERTIES PREFIX "")
 
 target_link_libraries(status_py_extension_stub
-                      PUBLIC status_pyinit_google3
-                              absl::status)
+                      PRIVATE status_pyinit_google3)
 
 # import_status_module =========================================================
 
@@ -245,6 +245,7 @@ install(
     ok_status_singleton
     no_throw_status
     status_not_ok_exception
+    check_status_module_imported
     status_caster
     statusor_caster
     status_py_extension_stub

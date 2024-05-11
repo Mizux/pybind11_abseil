@@ -9,10 +9,10 @@ target_include_directories(void_ptr_from_capsule
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(void_ptr_from_capsule
-                      PUBLIC absl::status
-                             absl::statusor
-                             absl::strings
-                             Python3::Module)
+                      PUBLIC absl::statusor
+                             Python3::Module
+                      PRIVATE absl::status
+                              absl::strings)
 
 # raw_ptr_from_capsule =========================================================
 

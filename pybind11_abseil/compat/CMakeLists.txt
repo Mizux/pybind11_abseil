@@ -8,11 +8,11 @@ target_include_directories(py_base_utilities
                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(py_base_utilities
-                      PUBLIC absl::absl_check
-                             absl::absl_log
-                             absl::strings
-                             absl::string_view
-                             Python3::Module)
+                      PUBLIC Python3::Module
+                      PRIVATE absl::absl_check
+                              absl::absl_log
+                              absl::strings
+                              absl::string_view)
 
 # status_from_core_py_exc ======================================================
 
@@ -26,9 +26,9 @@ target_include_directories(status_from_core_py_exc
 
 target_link_libraries(status_from_core_py_exc
                       PUBLIC py_base_utilities
-                             absl::flat_hash_map
                              absl::status
-                             Python3::Module)
+                      PRIVATE absl::flat_hash_map
+                              Python3::Module)
 
 # status_from_py_exc ===========================================================
 
@@ -42,12 +42,12 @@ target_include_directories(status_from_py_exc
 
 target_link_libraries(status_from_py_exc
                       PUBLIC py_base_utilities
-                             status_from_core_py_exc
-                             raw_ptr_from_capsule
-                             absl::absl_check
-                             absl::absl_log
                              absl::status
-                             Python3::Module)
+                             Python3::Module
+                      PRIVATE absl::absl_check
+                              absl::absl_log
+                              status_from_core_py_exc
+                              raw_ptr_from_capsule)
 
 install(
   TARGETS
