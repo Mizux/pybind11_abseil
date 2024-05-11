@@ -4,9 +4,15 @@ add_library(py_base_utilities STATIC py_base_utilities.cc)
 add_library(pybind11_abseil::compat::py_base_utilities ALIAS py_base_utilities)
 
 target_include_directories(py_base_utilities
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(py_base_utilities PUBLIC absl::strings absl::string_view)
+target_link_libraries(py_base_utilities
+                      PUBLIC Python3::Module
+                      PRIVATE absl::absl_check
+                              absl::absl_log
+                              absl::strings
+                              absl::string_view)
 
 # status_from_core_py_exc ======================================================
 
@@ -15,10 +21,14 @@ add_library(pybind11_abseil::compat::status_from_core_py_exc ALIAS
             status_from_core_py_exc)
 
 target_include_directories(status_from_core_py_exc
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(status_from_core_py_exc PUBLIC py_base_utilities
-                                                     absl::status)
+target_link_libraries(status_from_core_py_exc
+                      PUBLIC py_base_utilities
+                             absl::status
+                      PRIVATE absl::flat_hash_map
+                              Python3::Module)
 
 # status_from_py_exc ===========================================================
 
@@ -27,8 +37,44 @@ add_library(pybind11_abseil::compat::status_from_py_exc ALIAS
             status_from_py_exc)
 
 target_include_directories(status_from_py_exc
-                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           PUBLIC $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>
+                                  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(
-  status_from_py_exc PUBLIC py_base_utilities status_from_core_py_exc
-                            void_ptr_from_capsule absl::status)
+target_link_libraries(status_from_py_exc
+                      PUBLIC py_base_utilities
+                             absl::status
+                             Python3::Module
+                      PRIVATE absl::absl_check
+                              absl::absl_log
+                              status_from_core_py_exc
+                              raw_ptr_from_capsule)
+
+install(
+  TARGETS
+    py_base_utilities
+    status_from_core_py_exc
+    status_from_py_exc
+  EXPORT
+    pybind11_abseilTargets
+  INCLUDES
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  RUNTIME
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT pybind11_abseil_Runtime
+  LIBRARY
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Runtime
+    NAMELINK_COMPONENT pybind11_abseil_Development
+  ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Development
+)
+
+install(
+  FILES
+    py_base_utilities.h
+    status_from_core_py_exc.h
+    status_from_py_exc.h
+  DESTINATION
+    "${CMAKE_INSTALL_INCLUDEDIR}/pybind11_abseil/compat"
+)
