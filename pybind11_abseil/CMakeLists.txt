@@ -1,3 +1,6 @@
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
+
 add_subdirectory(compat)
 add_subdirectory(cpp_capsule_tools)
 
@@ -235,21 +238,85 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-if(CMAKE_INSTALL_PYDIR)
-  # Copying to two target directories for simplicity. It is currently unknown
-  # how to determine here which copy is actually being used.
-  install(
-    TARGETS status_py_extension_stub ok_status_singleton
-    EXPORT pybind11_abseilTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_PYDIR}/pybind11_abseil
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_PYDIR}/pybind11_abseil
-    RUNTIME DESTINATION ${CMAKE_INSTALL_PYDIR}/pybind11_abseil)
+install(
+  TARGETS
+    absl_casters
+    ok_status_singleton_lib
+    ok_status_singleton
+    no_throw_status
+    status_not_ok_exception
+    status_caster
+    statusor_caster
+    status_py_extension_stub
+    import_status_module
+    status_casters
+  EXPORT
+    pybind11_abseilTargets
+  INCLUDES
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  RUNTIME
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT pybind11_abseil_Runtime
+  LIBRARY
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Runtime
+    NAMELINK_COMPONENT pybind11_abseil_Development
+  ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Development
+)
 
-  install(
-    TARGETS status_py_extension_stub ok_status_singleton
-    EXPORT pybind11_abseil_cppTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(
+  EXPORT
+    pybind11_abseilTargets
+  FILE
+    pybind11_abseilTargets.cmake
+  NAMESPACE
+    pybind11_abseil::
+  DESTINATION
+    lib/cmake/pybind11_abseil
+  COMPONENT
+    pybind11_abseil_Development
+)
 
-endif()
+install(
+  FILES
+    absl_casters.h
+    check_status_module_imported.h
+    display_source_location_in_python.h
+    import_status_module.h
+    init_from_tag.h
+    no_throw_status.h
+    ok_status_singleton_lib.h
+    register_status_bindings.h
+    status_caster.h
+    status_casters.h
+    status_not_ok_exception.h
+    statusor_caster.h
+    utils_pybind11_absl.h
+  DESTINATION
+    "${CMAKE_INSTALL_INCLUDEDIR}/pybind11_abseil"
+)
+
+set(INCLUDE_INSTALL_DIR
+  include/pybind11_abseil
+  CACHE PATH "Location of header files"
+)
+
+configure_package_config_file(pybind11_abseilConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/pybind11_abseilConfig.cmake
+  INSTALL_DESTINATION lib/cmake/pybind11_abseil
+  PATH_VARS INCLUDE_INSTALL_DIR
+)
+
+set(pybind11_abseil_INSTALL_CMAKEDIR
+  ${CMAKE_INSTALL_LIBDIR}/cmake/pybind11_abseil
+  CACHE PATH "Path to pybind11_abseil cmake files"
+)
+
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/pybind11_abseilConfig.cmake
+  DESTINATION
+    ${pybind11_abseil_INSTALL_CMAKEDIR}
+)

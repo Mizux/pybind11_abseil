@@ -56,3 +56,35 @@ target_link_libraries(shared_ptr_from_capsule
                       INTERFACE void_ptr_from_capsule
                                 absl::statusor
                                 Python3::Module)
+
+install(
+    TARGETS
+      void_ptr_from_capsule
+      raw_ptr_from_capsule
+      make_shared_ptr_capsule
+      shared_ptr_from_capsule
+    EXPORT
+      pybind11_abseilTargets
+    INCLUDES
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    RUNTIME
+      DESTINATION ${CMAKE_INSTALL_BINDIR}
+      COMPONENT pybind11_abseil_Runtime
+    LIBRARY
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT pybind11_abseil_Runtime
+      NAMELINK_COMPONENT pybind11_abseil_Development
+    ARCHIVE
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT pybind11_abseil_Development
+)
+
+install(
+  FILES
+    make_shared_ptr_capsule.h
+    raw_ptr_from_capsule.h
+    shared_ptr_from_capsule.h
+    void_ptr_from_capsule.h
+  DESTINATION
+    "${CMAKE_INSTALL_INCLUDEDIR}/pybind11_abseil/cpp_capsule_tools"
+)

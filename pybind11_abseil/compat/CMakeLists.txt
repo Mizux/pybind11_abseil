@@ -48,3 +48,33 @@ target_link_libraries(status_from_py_exc
                              absl::absl_log
                              absl::status
                              Python3::Module)
+
+install(
+  TARGETS
+    py_base_utilities
+    status_from_core_py_exc
+    status_from_py_exc
+  EXPORT
+    pybind11_abseilTargets
+  INCLUDES
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  RUNTIME
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT pybind11_abseil_Runtime
+  LIBRARY
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Runtime
+    NAMELINK_COMPONENT pybind11_abseil_Development
+  ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT pybind11_abseil_Development
+)
+
+install(
+  FILES
+    py_base_utilities.h
+    status_from_core_py_exc.h
+    status_from_py_exc.h
+  DESTINATION
+    "${CMAKE_INSTALL_INCLUDEDIR}/pybind11_abseil/compat"
+)
