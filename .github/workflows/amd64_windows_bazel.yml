@@ -1,0 +1,48 @@
+# ref: https://github.com/actions/runner-images
+name: amd64 Windows Bazel
+
+on: [push, pull_request, workflow_dispatch]
+
+# Building using the github runner environement directly.
+jobs:
+  native:
+    strategy:
+      matrix:
+        # VS-2022 broken see https://github.com/bazelbuild/bazel/issues/18592
+        runner: [windows-2022, windows-2019]
+        python: [
+          {version: '3.8'},
+          {version: '3.9'},
+          {version: '3.10'},
+          {version: '3.11'},
+          {version: '3.12'},
+        ]
+      fail-fast: false # Don't cancel all jobs if one fails.
+    name: ${{ matrix.runner }} • Bazel • Python-${{ matrix.python.version }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python.version }}
+      - name: Check Python
+        run: python --version
+      - name: Install Bazel
+        run: choco install bazel
+      - name: Check Bazel
+        run: bazel version
+      - name: Build
+        run: >
+          bazel build
+          -c opt
+          --subcommands=pretty_print
+          --enable_bzlmod
+          ...
+      - name: Test
+        run: >
+          bazel test
+          -c opt
+          --test_output=all
+          --enable_bzlmod
+          ...
