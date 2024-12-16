@@ -1,38 +1,18 @@
+PYBIND11_ABSEIL_VERSION = "20240722.0"
+
 module(
     name = "pybind11_abseil",
-    version = "head",
+    version = PYBIND11_ABSEIL_VERSION,
+    repo_name = "org_pybind11_abseil",
 )
 
-bazel_dep(
-    name = "bazel_skylib",
-    version = "1.5.0",
-)
-
-bazel_dep(
-    name = "abseil-cpp",
-    version = "20240116.0",
-    repo_name = "com_google_absl",
-)
-
-bazel_dep(
-    name = "rules_cc",
-    version = "0.0.9",
-)
-
-bazel_dep(
-    name = "rules_python",
-    version = "0.31.0",
-)
-
-bazel_dep(
-    name = "platforms",
-    version = "0.0.8"
-)
-
-bazel_dep(
-    name = "pybind11_bazel",
-    version = "2.11.1.bzl.2",
-)
+# see https://registry.bazel.build/
+bazel_dep(name = "abseil-cpp", version = "20240722.0", repo_name = "com_google_absl")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "rules_cc", version = "0.0.16")
+bazel_dep(name = "rules_python", version = "0.40.0")
+bazel_dep(name = "pybind11_bazel", version = "2.13.6")
 
 #### DEV ONLY DEPENDENCIES BELOW HERE ####
 
@@ -49,6 +29,7 @@ DEFAULT_PYTHON = "3.11"
 python = use_extension("@rules_python//python/extensions:python.bzl", "python", dev_dependency=True)
 [
   python.toolchain(
+    ignore_root_user_error = True,  # needed for CI
     python_version = version,
     is_default = version == DEFAULT_PYTHON,
   )
