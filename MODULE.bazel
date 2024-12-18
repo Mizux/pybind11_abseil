@@ -17,6 +17,7 @@ bazel_dep(name = "pybind11_bazel", version = "2.13.6")
 #### DEV ONLY DEPENDENCIES BELOW HERE ####
 
 SUPPORTED_PYTHON_VERSIONS = [
+  "3.13",
   "3.12",
   "3.11",
   "3.10",
