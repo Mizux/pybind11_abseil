@@ -16,7 +16,7 @@ jobs:
         runs-on: [ubuntu-latest]
         build_tool: [bazel, cmake]
 
-    name: "${{matrix.runs-on}} ${{matrix.build_tool}}"
+    name: "script ${{matrix.build_tool}}"
     runs-on: ${{matrix.runs-on}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
