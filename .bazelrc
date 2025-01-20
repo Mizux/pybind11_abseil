@@ -6,9 +6,9 @@ build --verbose_failures
 
 # Abseil requires C++14 at minimum.
 build --enable_platform_specific_config
-build:linux --cxxopt=-std=c++14
-build:macos --cxxopt=-std=c++14
-build:windows --cxxopt=/std:c++14
+build:linux --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+build:macos --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+build:windows --cxxopt=/std:c++17 --host_cxxopt=/std:c++17
 
 # Enable the runfiles symlink tree on Windows. This makes it possible to build
 # the pip package on Windows without an intermediate data-file archive, as the
