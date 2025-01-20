@@ -42,7 +42,8 @@ target_link_libraries(ok_status_singleton_pyinit_google3
 
 # ok_status_singleton =======================================================
 
-pybind11_add_module(ok_status_singleton MODULE ok_status_singleton_py_extension_stub.cc)
+pybind11_add_module(ok_status_singleton MODULE
+                    ok_status_singleton_py_extension_stub.cc)
 add_library(pybind11_abseil::ok_status_singleton ALIAS ok_status_singleton)
 
 # note: macOS is APPLE and also UNIX !
@@ -154,26 +155,28 @@ target_link_libraries(status_pyinit_google3 PUBLIC register_status_bindings)
 # status ====================================================================
 
 pybind11_add_module(status_py_extension_stub MODULE status_py_extension_stub.cc)
-set_target_properties(status_py_extension_stub PROPERTIES
-  LIBRARY_OUTPUT_NAME "status")
+set_target_properties(status_py_extension_stub PROPERTIES LIBRARY_OUTPUT_NAME
+                                                          "status")
 
 # note: macOS is APPLE and also UNIX !
 if(APPLE)
-  set_target_properties(status_py_extension_stub PROPERTIES
-    SUFFIX ".so"
-    INSTALL_RPATH "@loader_path;@loader_path/../.libs")
+  set_target_properties(
+    status_py_extension_stub
+    PROPERTIES SUFFIX ".so" INSTALL_RPATH "@loader_path;@loader_path/../.libs")
 elseif(UNIX)
-  set_target_properties(status_py_extension_stub PROPERTIES
-    INSTALL_RPATH "$ORIGIN:$ORIGIN/../.libs")
+  set_target_properties(status_py_extension_stub
+                        PROPERTIES INSTALL_RPATH "$ORIGIN:$ORIGIN/../.libs")
 endif()
 
 add_library(pybind11_abseil::status ALIAS status_py_extension_stub)
 
-target_include_directories(status_py_extension_stub INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+target_include_directories(status_py_extension_stub
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
 set_target_properties(status_py_extension_stub PROPERTIES PREFIX "")
 
-target_link_libraries(status_py_extension_stub PUBLIC status_pyinit_google3 absl::status)
+target_link_libraries(status_py_extension_stub PUBLIC status_pyinit_google3
+                                                      absl::status)
 
 # import_status_module =========================================================
 
@@ -191,10 +194,10 @@ add_library(status_casters INTERFACE)
 add_library(pybind11_abseil::status_casters ALIAS status_casters)
 
 target_include_directories(status_casters
-  INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${TOP_LEVEL_DIR}>)
 
 target_link_libraries(status_casters INTERFACE import_status_module
-  status_caster statusor_caster)
+                                               status_caster statusor_caster)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
